@@ -1,3 +1,4 @@
+
 name: CI/CD Donaton Backend EKS
 
 on:
@@ -11,6 +12,10 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+      EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
 
     steps:
       - name: Checkout código
@@ -32,7 +37,6 @@ jobs:
       - name: Build y push de BBDD MySQL
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
           ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
@@ -48,7 +52,6 @@ jobs:
       - name: Build y push de Backend
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
           ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
@@ -79,8 +82,6 @@ jobs:
 
       # ---------- Aplicar manifests base ----------
       - name: Aplicar manifests base (namespace, DB, prisma, servicios)
-        env:
-          EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
         run: |
           kubectl apply -f k8s/namespace.yml
           kubectl apply -f k8s/mysql-secret.yml -n $EKS_NAMESPACE
@@ -92,7 +93,6 @@ jobs:
       - name: Actualizar Backend en EKS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
         run: |
           kubectl apply -f k8s/backend-deployment.yml -n $EKS_NAMESPACE
           kubectl apply -f k8s/backend-service.yml -n $EKS_NAMESPACE
@@ -102,17 +102,14 @@ jobs:
 
       # ---------- HPA (si existen los YAML) ----------
       - name: Aplicar HPA
-        env:
-          EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
         run: |
           kubectl apply -f k8s/backend-hpa.yml -n $EKS_NAMESPACE
 
       # ---------- Ver estado final ----------
       - name: Ver pods y servicios
-        env:
-          EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
         run: |
           kubectl get pods -n $EKS_NAMESPACE
           kubectl get svc -n $EKS_NAMESPACE
           kubectl get hpa -n $EKS_NAMESPACE
+
 
