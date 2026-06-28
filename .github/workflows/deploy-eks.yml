@@ -33,6 +33,12 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
+          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         run: |
           docker compose build db-mysql
           docker tag donaton-db:latest $ECR_REGISTRY/donaton-db:${IMAGE_TAG}
@@ -43,6 +49,12 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
+          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
+          DATABASE_USER: ${{ secrets.DATABASE_USER }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         run: |
           docker compose build backend-nextjs
           docker tag donaton-backend:latest $ECR_REGISTRY/donaton-backend:${IMAGE_TAG}
