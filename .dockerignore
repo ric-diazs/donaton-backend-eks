@@ -1,0 +1,36 @@
+# Dependencias y build
+node_modules
+.next
+out
+coverage
+
+# Archivos de configuración locales / secretos
+.env
+*.env
+Dockerfile
+docker-compose*.yml
+
+# Archivos para Docker/infra que no necesitas meter al build context
+nextjs-container
+mysql-container
+
+# Git
+.git
+.gitignore
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Cachés / temp
+.DS_Store
+*.swp
+*.swo
+*.tmp
+
+# Prisma y otros que normalmente se generan desde el contenedor/CI
+prisma/migrations
+prisma/dev.db

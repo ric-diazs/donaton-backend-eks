@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: donaton-backend
+  namespace: donaton
+spec:
+  selector:
+    app: donaton-backend
+  ports:
+    - port: 3000
+      targetPort: 3000
+  type: ClusterIP
+

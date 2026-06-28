@@ -1,0 +1,67 @@
+services:
+    backend-nextjs:
+        image: donaton-backend
+        build:
+            context: .
+            dockerfile: nextjs-container/Dockerfile
+            args:
+                DATABASE_URL: ${DATABASE_URL}
+                SHADOW_DATABASE_URL: ${SHADOW_DATABASE_URL}
+        container_name: api_nextjs
+        restart: unless-stopped
+        ports:
+            - "3000:3000"
+        depends_on:
+            db-mysql:
+                condition: service_healthy
+        environment:
+            - DATABASE_URL=${DATABASE_URL}
+            - SHADOW_DATABASE_URL=${SHADOW_DATABASE_URL}
+        command: >
+            sh -c "
+            npx prisma generate &&
+            npx prisma db push &&
+            node server.js
+            "
+        networks:
+            - donaton_network
+
+    db-mysql:
+        image: donaton-db
+        # Servicio que levanta un contenedor con MySQL para la API.
+        build:
+            # Ruta del contexto de build para usar el Dockerfile de ./mysql-container.
+            context: ./mysql-container
+        # Nombre fijo del contenedor
+        container_name: db_mysql
+        # Reinicia automáticamente el contenedor salvo que se detenga explícitamente.
+        restart: unless-stopped
+        ports:
+            # Mapea el puerto MySQL del contenedor al host.
+            - "3306:3306"
+        environment:
+            # Variables de entorno para iniciar base de datos
+            - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
+            - MYSQL_DATABASE=${DATABASE_NAME}
+            - MYSQL_USER=${DATABASE_USER}
+            - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+        volumes:
+            # Persistencia de datos de MySQL entre reinicios/recreaciones.
+            - mysql-data:/var/lib/mysql
+            # Script SQL inicial para poblar/crear objetos al primer arranque.
+            - ./mysql-container/init.sql:/docker-entrypoint-initdb.d/init.sql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${ROOT_PASSWORD}"]
+            interval: 5s
+            timeout: 3s
+            retries: 30
+        networks:
+            - donaton_network
+
+# Volumen administrado por Docker para persistir el directorio de datos de MySQL.
+volumes:
+    mysql-data:
+
+networks:
+    donaton_network:
+        external: true

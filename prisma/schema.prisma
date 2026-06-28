@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- USUARIOS ----------
+//model Usuario {
+//  id        Int      @id @default(autoincrement())
+//  nombre    String
+//  apellido  String
+//  correo    String   @unique
+//  password  String
+//  rol       Rol      @default(VOLUNTARIO)
+//  fecha     DateTime @default(now())
+//
+//  donaciones   Donacion[]
+//  necesidades  Necesidad[]
+//  asignaciones Asignacion[]
+//}
+//
+//enum Rol {
+//  ADMIN
+//  COORDINADOR
+//  VOLUNTARIO
+//}
+//
+//// ---------- DONANTES ----------
+//model Donante {
+//  id       Int         @id @default(autoincrement())
+//  nombre   String
+//  correo   String
+//  tipo     TipoDonante @default(PERSONA)
+//  creacion DateTime    @default(now())
+//
+//  donaciones Donacion[]
+//}
+//
+//enum TipoDonante {
+//  PERSONA
+//  EMPRESA
+//}
+
+// ---------- DONACIONES ----------
+model Donacion {
+  id            Int            @id @default(autoincrement())
+  tipo          String
+  cantidad      Float
+  donanteNombre String
+//  unidad    String
+//  origen    String
+//  estado    EstadoDonacion @default(PENDIENTE)
+//  ot        String?        @unique
+  fecha     DateTime       @default(now())
+
+//  donanteId Int?
+//  donante   Donante? @relation(fields: [donanteId], references: [id])
+//
+//  usuarioId Int?
+//  usuario   Usuario? @relation(fields: [usuarioId], references: [id])
+//
+//  necesidadId Int?
+//  necesidad   Necesidad? @relation(fields: [necesidadId], references: [id])
+//
+//  centroAcopioId Int?
+//  centroAcopio   CentroAcopio? @relation(fields: [centroAcopioId], references: [id])
+//
+//  asignaciones Asignacion[]
+}
+
+//enum EstadoDonacion {
+//  PENDIENTE
+//  RECIBIDA
+//  DISPONIBLE
+//  ASIGNADA
+//  EN_TRANSITO
+//  ENTREGADA
+//}
+//
+//// ---------- NECESIDADES ----------
+//model Necesidad {
+//  id            Int             @id @default(autoincrement())
+//  categoria     String
+//  prioridad     Prioridad       @default(MEDIA)
+//  cantRequerida Float
+//  cantCubierta  Float           @default(0)
+//  estado        EstadoNecesidad @default(ACTIVA)
+//  fecha         DateTime        @default(now())
+//
+//  comunaId Int
+//  comuna   Comuna @relation(fields: [comunaId], references: [id])
+//
+//  usuarioId Int
+//  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+//
+//  donaciones   Donacion[]
+//  asignaciones Asignacion[]
+//}
+//
+//enum Prioridad {
+//  CRITICA
+//  ALTA
+//  MEDIA
+//  BAJA
+//}
+//
+//enum EstadoNecesidad {
+//  ACTIVA
+//  CUBIERTA
+//  CERRADA
+//}
+//
+//// ---------- ASIGNACIONES ----------
+//model Asignacion {
+//  id              Int              @id @default(autoincrement())
+//  estado          EstadoAsignacion @default(ASIGNADA)
+//  fechaAsignacion DateTime         @default(now())
+//  fechaEntrega    DateTime?
+//
+//  donacionId Int
+//  donacion   Donacion @relation(fields: [donacionId], references: [id])
+//
+//  necesidadId Int
+//  necesidad   Necesidad @relation(fields: [necesidadId], references: [id])
+//
+//  responsableId Int
+//  responsable   Usuario @relation(fields: [responsableId], references: [id])
+//}
+//
+//enum EstadoAsignacion {
+//  ASIGNADA
+//  EN_TRANSITO
+//  ENTREGADA
+//}
+//
+//// ---------- CENTROS DE ACOPIO ----------
+//model CentroAcopio {
+//  id        Int          @id @default(autoincrement())
+//  nombre    String
+//  direccion String
+//  capacidad Float
+//  ocupado   Float        @default(0)
+//  estado    EstadoCentro @default(ACTIVO)
+//
+//  comunaId Int
+//  comuna   Comuna @relation(fields: [comunaId], references: [id])
+//
+//  donaciones Donacion[]
+//}
+//
+//enum EstadoCentro {
+//  ACTIVO
+//  SATURADO
+//  CERRADO
+//}
+//
+//// ---------- REGIÓN Y COMUNA ----------
+//model Region {
+//  id     Int    @id @default(autoincrement())
+//  nombre String @unique
+//
+//  comunas Comuna[]
+//}
+//
+//model Comuna {
+//  id     Int    @id @default(autoincrement())
+//  nombre String
+//
+//  regionId Int
+//  region   Region @relation(fields: [regionId], references: [id])
+//
+//  necesidades   Necesidad[]
+//  centrosAcopio CentroAcopio[]
+//
+//}

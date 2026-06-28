@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: donaton-db
+  namespace: donaton
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: donaton-db
+  template:
+    metadata:
+      labels:
+        app: donaton-db
+    spec:
+      containers:
+      - name: db-mysql
+        image: 471112695829.dkr.ecr.us-east-1.amazonaws.com/donaton-db:eks-v1 # Modifica el ID con el de tu cuenta
+        ports:
+        - containerPort: 3306
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: ROOT_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: DATABASE_NAME
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: DATABASE_USER
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: DATABASE_PASSWORD
+        volumeMounts:
+          - name: mysql-data
+            mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          emptyDir: {}
