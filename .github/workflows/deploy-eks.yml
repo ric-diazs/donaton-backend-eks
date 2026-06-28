@@ -96,8 +96,8 @@ jobs:
         run: |
           kubectl apply -f k8s/backend-deployment.yml -n $EKS_NAMESPACE
           kubectl apply -f k8s/backend-service.yml -n $EKS_NAMESPACE
-          kubectl set image deployment/donaton-backend backend=$ECR_REGISTRY/donaton-backend:${IMAGE_TAG} -n $EKS_NAMESPACE
-          kubectl rollout status deployment/tienda-backend -n $EKS_NAMESPACE
+          kubectl set image deployment/donaton-backend donaton-backend=$ECR_REGISTRY/donaton-backend:${IMAGE_TAG} -n $EKS_NAMESPACE
+          kubectl rollout status deployment/donaton-backend -n $EKS_NAMESPACE
 
       # ---------- HPA (si existen los YAML) ----------
       - name: Aplicar HPA
