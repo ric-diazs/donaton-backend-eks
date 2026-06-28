@@ -96,16 +96,8 @@ jobs:
         run: |
           kubectl apply -f k8s/backend-deployment.yml -n $EKS_NAMESPACE
           kubectl apply -f k8s/backend-service.yml -n $EKS_NAMESPACE
+          kubectl apply -f k8s/backend-service-external.yml -n $EKS_NAMESPACE
           kubectl set image deployment/donaton-backend api-nextjs=$ECR_REGISTRY/donaton-backend:${IMAGE_TAG} -n $EKS_NAMESPACE
-
-          kubectl describe deployment/donaton-backend -n $EKS_NAMESPACE
-          kubectl get pods -n $EKS_NAMESPACE -o wide
-          
-          kubectl describe pod -n $EKS_NAMESPACE -l app=donaton-backend || true
-          kubectl logs -n $EKS_NAMESPACE -l app=donaton-backend --all-containers --tail=300 || true
-          
-          kubectl get events -n $EKS_NAMESPACE --sort-by=.metadata.creationTimestamp | tail -n 80
-
           kubectl rollout status deployment/donaton-backend -n $EKS_NAMESPACE
 
       # ---------- HPA (si existen los YAML) ----------
