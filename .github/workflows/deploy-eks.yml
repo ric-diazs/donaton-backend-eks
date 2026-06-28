@@ -104,7 +104,7 @@ jobs:
         env:
           EKS_NAMESPACE: ${{ secrets.EKS_NAMESPACE }}
         run: |
-          kubectl apply -f k8s/backend-hpa.yaml -n $EKS_NAMESPACE
+          kubectl apply -f k8s/backend-hpa.yml -n $EKS_NAMESPACE
 
       # ---------- Ver estado final ----------
       - name: Ver pods y servicios
