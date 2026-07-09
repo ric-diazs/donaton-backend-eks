@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: db-mysql
-        image: 471112695829.dkr.ecr.us-east-1.amazonaws.com/donaton-db:eks-v1 # Modifica el ID con el de tu cuenta
+        image: 063406728315.dkr.ecr.us-east-1.amazonaws.com/donaton-db:eks-v1 # Modifica el ID con el de tu cuenta
         ports:
         - containerPort: 3306
         env:
